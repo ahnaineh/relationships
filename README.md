@@ -14,7 +14,7 @@ Add the package to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  relationships: ^1.0.0
+  relationships: ^0.0.1
 ```
 
 ## Usage

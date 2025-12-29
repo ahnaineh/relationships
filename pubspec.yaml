@@ -1,7 +1,9 @@
 name: relationships
 description: Relationship modeling and kinship calculations with localized descriptions.
-version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+version: 0.0.1
+repository: https://github.com/ahnaineh/relationships
+issue_tracker: https://github.com/ahnaineh/relationships/issues
+
 
 environment:
   sdk: ^3.9.2
@@ -14,6 +16,7 @@ dependencies:
   json_annotation: ^4.9.0
   freezed: ^3.2.0
   collection: ^1.19.1
+  intl: ^0.20.2
 
 dev_dependencies:
   lints: ^6.0.0
