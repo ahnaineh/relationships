@@ -1,0 +1,112 @@
+import '../../../i18n/strings.g.dart';
+import '../types.dart';
+
+extension TypesLocalization on Types {
+  String get localizedName {
+    final translations = t.types;
+    switch (this) {
+      case Types.person:
+        return translations.person;
+      case Types.femaleAscendant:
+        return translations.femaleAscendant;
+      case Types.maleAscendant:
+        return translations.maleAscendant;
+      case Types.paternalUncle:
+        return translations.paternalUncle;
+      case Types.paternalPaternalHalfUncle:
+        return translations.paternalPaternalHalfUncle;
+      case Types.paternalMaternalHalfUncle:
+        return translations.paternalMaternalHalfUncle;
+      case Types.maternalUncle:
+        return translations.maternalUncle;
+      case Types.maternalPaternalHalfUncle:
+        return translations.maternalPaternalHalfUncle;
+      case Types.maternalMaternalHalfUncle:
+        return translations.maternalMaternalHalfUncle;
+      case Types.paternalAunt:
+        return translations.paternalAunt;
+      case Types.paternalPaternalHalfAunt:
+        return translations.paternalPaternalHalfAunt;
+      case Types.paternalMaternalHalfAunt:
+        return translations.paternalMaternalHalfAunt;
+      case Types.maternalAunt:
+        return translations.maternalAunt;
+      case Types.maternalPaternalHalfAunt:
+        return translations.maternalPaternalHalfAunt;
+      case Types.maternalMaternalHalfAunt:
+        return translations.maternalMaternalHalfAunt;
+      case Types.paternalMaleCousin:
+        return translations.paternalMaleCousin;
+      case Types.paternalPaternalHalfMaleCousin:
+        return translations.paternalPaternalHalfMaleCousin;
+      case Types.paternalMaternalHalfMaleCousin:
+        return translations.paternalMaternalHalfMaleCousin;
+      case Types.paternalFemaleCousin:
+        return translations.paternalFemaleCousin;
+      case Types.paternalPaternalHalfFemaleCousin:
+        return translations.paternalPaternalHalfFemaleCousin;
+      case Types.paternalMaternalHalfFemaleCousin:
+        return translations.paternalMaternalHalfFemaleCousin;
+      case Types.maternalMaleCousin:
+        return translations.maternalMaleCousin;
+      case Types.maternalPaternalHalfMaleCousin:
+        return translations.maternalPaternalHalfMaleCousin;
+      case Types.maternalMaternalHalfMaleCousin:
+        return translations.maternalMaternalHalfMaleCousin;
+      case Types.maternalFemaleCousin:
+        return translations.maternalFemaleCousin;
+      case Types.maternalPaternalHalfFemaleCousin:
+        return translations.maternalPaternalHalfFemaleCousin;
+      case Types.maternalMaternalHalfFemaleCousin:
+        return translations.maternalMaternalHalfFemaleCousin;
+      case Types.husband:
+        return translations.husband;
+      case Types.wife:
+        return translations.wife;
+      case Types.fullBrother:
+        return translations.fullBrother;
+      case Types.fraternalNephew:
+        return translations.fraternalNephew;
+      case Types.fraternalNiece:
+        return translations.fraternalNiece;
+      case Types.paternalHalfBrother:
+        return translations.paternalHalfBrother;
+      case Types.maternalHalfBrother:
+        return translations.maternalHalfBrother;
+      case Types.maternalFraternalHalfNephew:
+        return translations.maternalFraternalHalfNephew;
+      case Types.maternalFraternalHalfNiece:
+        return translations.maternalFraternalHalfNiece;
+      case Types.paternalFraternalHalfNephew:
+        return translations.paternalFraternalHalfNephew;
+      case Types.paternalFraternalHalfNiece:
+        return translations.paternalFraternalHalfNiece;
+      case Types.fullSister:
+        return translations.fullSister;
+      case Types.maternalHalfSister:
+        return translations.maternalHalfSister;
+      case Types.paternalHalfSister:
+        return translations.paternalHalfSister;
+      case Types.sororalNephew:
+        return translations.sororalNephew;
+      case Types.sororalNiece:
+        return translations.sororalNiece;
+      case Types.maternalSororalHalfNephew:
+        return translations.maternalSororalHalfNephew;
+      case Types.maternalSororalHalfNiece:
+        return translations.maternalSororalHalfNiece;
+      case Types.paternalSororalHalfNephew:
+        return translations.paternalSororalHalfNephew;
+      case Types.paternalSororalHalfNiece:
+        return translations.paternalSororalHalfNiece;
+      case Types.maleDescendant:
+        return translations.maleDescendant;
+      case Types.femaleDescendant:
+        return translations.femaleDescendant;
+      case Types.manumitter:
+        return translations.manumitter;
+      case Types.treasury:
+        return translations.treasury;
+    }
+  }
+}
