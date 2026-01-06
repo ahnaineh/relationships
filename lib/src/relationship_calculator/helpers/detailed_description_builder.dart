@@ -24,12 +24,13 @@ class DetailedDescriptionBuilder {
       case 'wife':
         return translations.wife;
       case 'parent':
-        return gender == Gender.male
-            ? translations.father
-            : translations.mother;
+        if (gender == Gender.khuntha) return translations.parent;
+        return gender == Gender.male ? translations.father : translations.mother;
       case 'child':
+        if (gender == Gender.khuntha) return translations.child;
         return gender == Gender.male ? translations.son : translations.daughter;
       case 'spouse':
+        if (gender == Gender.khuntha) return translations.spouse;
         return gender == Gender.male ? translations.husband : translations.wife;
       default:
         return relationType;
@@ -46,6 +47,36 @@ class DetailedDescriptionBuilder {
     String base;
 
     final isArabic = LocaleSettings.currentLocale == AppLocale.ar;
+
+    if (gender == Gender.khuntha) {
+      final absGap = generationGap.abs();
+      if (absGap == 1) {
+        base = translations.base.parent;
+      } else {
+        final greatConnector = isArabic ? ' ' : '-';
+        final greats = absGap > 2
+            ? (translations.modifiers.great + greatConnector) * (absGap - 2)
+            : '';
+        base = absGap == 2
+            ? translations.base.grandparent
+            : '$greats${translations.base.grandparent}';
+        if (lineage == Lineage.paternal) {
+          base = isArabic
+              ? '$base ${translations.modifiers.paternal}'
+              : '${translations.modifiers.paternal} $base';
+        } else if (lineage == Lineage.maternal) {
+          base = isArabic
+              ? '$base ${translations.modifiers.maternal}'
+              : '${translations.modifiers.maternal} $base';
+        }
+      }
+
+      if (pathDescription != null && pathDescription.isNotEmpty) {
+        base = isArabic ? '$base ($pathDescription)' : '$base ($pathDescription)';
+      }
+
+      return base;
+    }
 
     switch (generationGap.abs()) {
       case 1:
@@ -133,6 +164,20 @@ class DetailedDescriptionBuilder {
     final translations = t.relationships;
     final isArabic = LocaleSettings.currentLocale == AppLocale.ar;
 
+    if (gender == Gender.khuntha) {
+      if (generationGap == 1) {
+        return translations.base.child;
+      }
+      if (generationGap == 2) {
+        return translations.base.grandchild;
+      }
+
+      final greatConnector = isArabic ? ' ' : '-';
+      final greats =
+          (translations.modifiers.great + greatConnector) * (generationGap - 2);
+      return '$greats${translations.base.grandchild}';
+    }
+
     switch (generationGap) {
       case 1:
         return gender == Gender.male
@@ -179,6 +224,23 @@ class DetailedDescriptionBuilder {
     final translations = t.relationships;
     final isArabic = LocaleSettings.currentLocale == AppLocale.ar;
 
+    if (gender == Gender.khuntha) {
+      final base = translations.base.sibling;
+      switch (siblingType) {
+        case SiblingType.paternalHalf:
+          return isArabic
+              ? '$base ${translations.modifiers.paternal}'
+              : '${translations.modifiers.paternalHalf}-$base';
+        case SiblingType.maternalHalf:
+          return isArabic
+              ? '$base ${translations.modifiers.maternal}'
+              : '${translations.modifiers.maternalHalf}-$base';
+        case SiblingType.full:
+        case SiblingType.none:
+          return base;
+      }
+    }
+
     String base = gender == Gender.male
         ? translations.base.brother
         : translations.base.sister;
@@ -218,6 +280,32 @@ class DetailedDescriptionBuilder {
   }) {
     final translations = t.relationships;
     final isArabic = LocaleSettings.currentLocale == AppLocale.ar;
+
+    if (gender == Gender.khuntha) {
+      final baseSibling = translations.base.sibling;
+      String siblingLabel = baseSibling;
+
+      switch (siblingType) {
+        case SiblingType.full:
+        case SiblingType.none:
+          break;
+        case SiblingType.paternalHalf:
+          siblingLabel = isArabic
+              ? '$baseSibling ${translations.modifiers.paternal}'
+              : '${translations.modifiers.paternalHalf}-$baseSibling';
+          break;
+        case SiblingType.maternalHalf:
+          siblingLabel = isArabic
+              ? '$baseSibling ${translations.modifiers.maternal}'
+              : '${translations.modifiers.maternalHalf}-$baseSibling';
+          break;
+      }
+
+      return translations.patterns.childOfSibling(
+        child: translations.base.child,
+        sibling: siblingLabel,
+      );
+    }
 
     if (isArabic) {
       String siblingPart;
@@ -289,6 +377,36 @@ class DetailedDescriptionBuilder {
     final translations = t.relationships;
     final isArabic = LocaleSettings.currentLocale == AppLocale.ar;
 
+    if (gender == Gender.khuntha) {
+      final lineage = isPaternal
+          ? translations.modifiers.paternal
+          : translations.modifiers.maternal;
+      final baseSibling = translations.base.sibling;
+      String siblingLabel = baseSibling;
+
+      switch (siblingType) {
+        case SiblingType.full:
+        case SiblingType.none:
+          break;
+        case SiblingType.paternalHalf:
+          siblingLabel = isArabic
+              ? '$baseSibling ${translations.modifiers.paternal}'
+              : '${translations.modifiers.paternalHalf}-$baseSibling';
+          break;
+        case SiblingType.maternalHalf:
+          siblingLabel = isArabic
+              ? '$baseSibling ${translations.modifiers.maternal}'
+              : '${translations.modifiers.maternalHalf}-$baseSibling';
+          break;
+      }
+
+      final base = translations.patterns.siblingOfParent(
+        uncle: siblingLabel,
+        parent: translations.base.parent,
+      );
+      return isArabic ? '$base $lineage' : '$lineage $base';
+    }
+
     if (isArabic) {
       String base;
       if (isPaternal) {
@@ -348,6 +466,39 @@ class DetailedDescriptionBuilder {
   }) {
     final translations = t.relationships;
     final isArabic = LocaleSettings.currentLocale == AppLocale.ar;
+
+    if (gender == Gender.khuntha) {
+      if (isArabic) {
+        return translations.base.cousin;
+      }
+
+      final lineage = isPaternal
+          ? translations.modifiers.paternal
+          : translations.modifiers.maternal;
+
+      String siblingDesc = '';
+      switch (siblingType) {
+        case SiblingType.full:
+          siblingDesc = isPaternal
+              ? " (father's sibling's child)"
+              : " (mother's sibling's child)";
+          break;
+        case SiblingType.paternalHalf:
+          siblingDesc = isPaternal
+              ? " (father's paternal half-sibling's child)"
+              : " (mother's paternal half-sibling's child)";
+          break;
+        case SiblingType.maternalHalf:
+          siblingDesc = isPaternal
+              ? " (father's maternal half-sibling's child)"
+              : " (mother's maternal half-sibling's child)";
+          break;
+        case SiblingType.none:
+          break;
+      }
+
+      return '$lineage ${translations.base.cousin}$siblingDesc';
+    }
 
     if (isArabic) {
       String base;
@@ -422,6 +573,10 @@ class DetailedDescriptionBuilder {
 
   static String buildStepChildDescription(Gender gender) {
     final translations = t.relationships.base;
+    if (gender == Gender.khuntha) {
+      final isArabic = LocaleSettings.currentLocale == AppLocale.ar;
+      return isArabic ? 'ربيب/ربيبة' : 'step-child';
+    }
     return gender == Gender.male
         ? translations.stepSon
         : translations.stepDaughter;

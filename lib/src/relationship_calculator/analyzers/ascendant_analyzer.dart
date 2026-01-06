@@ -18,6 +18,7 @@ class AscendantAnalyzer {
       target: relativeTo,
       maleType: Types.maleAscendant,
       femaleType: Types.femaleAscendant,
+      khunthaType: Types.person,
       genderOverrides: genderOverrides,
     );
 

@@ -59,7 +59,11 @@ class NieceNephewAnalyzer {
               Types.maternalSororalHalfNiece,
         };
 
-    final type = typeMap[(siblingType, siblingGender, relativeGender)];
+    var type = typeMap[(siblingType, siblingGender, relativeGender)];
+    if (type == null &&
+        (relativeGender == Gender.khuntha || siblingGender == Gender.khuntha)) {
+      type = Types.person;
+    }
     if (type == null) return null;
 
     final genderPath = GenderResolver.resolveGenderPath(
@@ -144,9 +148,16 @@ class NieceNephewAnalyzer {
     );
 
     final isMale = relativeGender == Gender.male;
-    final baseRole = isMale ? 'grand-nephew' : 'grand-niece';
-    final throughBrother = siblingGender == Gender.male;
-    final throughType = throughBrother ? 'brother' : 'sister';
+    final baseRole = relativeGender == Gender.khuntha
+        ? 'grand-niece/nephew'
+        : isMale
+        ? 'grand-nephew'
+        : 'grand-niece';
+    final throughType = siblingGender == Gender.male
+        ? 'brother'
+        : siblingGender == Gender.female
+        ? 'sister'
+        : 'sibling';
 
     String siblingDesc = '';
     switch (siblingType) {
@@ -154,10 +165,14 @@ class NieceNephewAnalyzer {
         siblingDesc = throughType;
         break;
       case SiblingType.paternalHalf:
-        siblingDesc = 'paternal half-$throughType';
+        siblingDesc = siblingGender == Gender.khuntha
+            ? 'paternal half-sibling'
+            : 'paternal half-$throughType';
         break;
       case SiblingType.maternalHalf:
-        siblingDesc = 'maternal half-$throughType';
+        siblingDesc = siblingGender == Gender.khuntha
+            ? 'maternal half-sibling'
+            : 'maternal half-$throughType';
         break;
       case SiblingType.none:
         break;

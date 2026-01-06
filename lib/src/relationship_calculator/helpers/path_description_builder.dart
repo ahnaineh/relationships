@@ -217,6 +217,15 @@ class PathDescriptionBuilder {
               part = 'أم';
             }
             break;
+          case RelationshipStep.parent:
+            if (isFirst) {
+              part = translations.base.parent;
+            } else if (isLast) {
+              part = 'ال${translations.base.parent}';
+            } else {
+              part = translations.base.parent;
+            }
+            break;
           case RelationshipStep.son:
             if (isFirst) {
               part = translations.base.son;
@@ -233,6 +242,15 @@ class PathDescriptionBuilder {
               part = 'البنت';
             } else {
               part = 'بنت';
+            }
+            break;
+          case RelationshipStep.child:
+            if (isFirst) {
+              part = translations.base.child;
+            } else if (isLast) {
+              part = 'الطفل';
+            } else {
+              part = 'طفل';
             }
             break;
           case RelationshipStep.husband:
@@ -253,7 +271,14 @@ class PathDescriptionBuilder {
               part = 'زوجة';
             }
             break;
-          default:
+          case RelationshipStep.spouse:
+            if (isFirst) {
+              part = translations.base.spouse;
+            } else if (isLast) {
+              part = 'ال${translations.base.spouse}';
+            } else {
+              part = translations.base.spouse;
+            }
             break;
         }
 

@@ -28,10 +28,28 @@ class RelationshipCalculator {
       final connections = <(Person, RelationshipStep)>[];
 
       if (current.father != null) {
-        connections.add((current.father!, RelationshipStep.father));
+        final fatherGender = GenderResolver.resolveGender(
+          target: current.father!,
+          genderOverrides: genderOverrides,
+        );
+        final step = switch (fatherGender) {
+          Gender.male => RelationshipStep.father,
+          Gender.female => RelationshipStep.mother,
+          Gender.khuntha => RelationshipStep.parent,
+        };
+        connections.add((current.father!, step));
       }
       if (current.mother != null) {
-        connections.add((current.mother!, RelationshipStep.mother));
+        final motherGender = GenderResolver.resolveGender(
+          target: current.mother!,
+          genderOverrides: genderOverrides,
+        );
+        final step = switch (motherGender) {
+          Gender.male => RelationshipStep.father,
+          Gender.female => RelationshipStep.mother,
+          Gender.khuntha => RelationshipStep.parent,
+        };
+        connections.add((current.mother!, step));
       }
 
       for (final child in current.children) {

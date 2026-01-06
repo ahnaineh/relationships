@@ -76,6 +76,7 @@ class DirectRelationshipAnalyzer {
           target: relativeTo,
           maleType: Types.maleAscendant,
           femaleType: Types.femaleAscendant,
+          khunthaType: Types.person,
           genderOverrides: genderOverrides,
         );
         return Relationship(
@@ -152,6 +153,7 @@ class DirectRelationshipAnalyzer {
           target: relativeTo,
           maleType: Types.maleDescendant,
           femaleType: Types.femaleDescendant,
+          khunthaType: Types.person,
           genderOverrides: genderOverrides,
         );
         return Relationship(
@@ -224,6 +226,7 @@ class DirectRelationshipAnalyzer {
           target: relativeTo,
           maleType: Types.husband,
           femaleType: Types.wife,
+          khunthaType: Types.person,
           genderOverrides: genderOverrides,
         );
         return Relationship(

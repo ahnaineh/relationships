@@ -58,7 +58,10 @@ class AuntUncleAnalyzer {
           Types.maternalMaternalHalfAunt,
     };
 
-    final type = typeMap[(isPaternal, siblingType, relativeGender)];
+    var type = typeMap[(isPaternal, siblingType, relativeGender)];
+    if (type == null && relativeGender == Gender.khuntha) {
+      type = Types.person;
+    }
     if (type == null) return null;
 
     final genderPath = GenderResolver.resolveGenderPath(
@@ -129,7 +132,11 @@ class AuntUncleAnalyzer {
     );
 
     final isMale = relativeGender == Gender.male;
-    final baseRole = isMale ? 'great-uncle' : 'great-aunt';
+    final baseRole = relativeGender == Gender.khuntha
+        ? 'great-aunt/uncle'
+        : isMale
+        ? 'great-uncle'
+        : 'great-aunt';
     final lineage = isPaternal ? 'paternal' : 'maternal';
     final detailedDescription = '$lineage $baseRole';
 

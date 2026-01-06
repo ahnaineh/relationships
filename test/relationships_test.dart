@@ -73,5 +73,41 @@ void main() {
       await LocaleSettings.setLocale(AppLocale.en);
       expect(t.relationships.base.father, equals('father'));
     });
+
+    test('Khuntha cannot be a spouse or parent', () {
+      final khuntha = Person(name: 'Khuntha', gender: Gender.khuntha);
+      final partner = Person(name: 'Partner', gender: Gender.male);
+      final child = Person(name: 'Child', gender: Gender.male);
+
+      expect(() => khuntha.addSpouse(partner), throwsArgumentError);
+      expect(() => partner.addSpouse(khuntha), throwsArgumentError);
+      expect(() => khuntha.addChild(child), throwsArgumentError);
+    });
+
+    test('Khuntha uses neutral relationship labels', () {
+      final father = Person(name: 'Father', gender: Gender.male);
+      final mother = Person(name: 'Mother', gender: Gender.female);
+      final sibling = Person(name: 'Sibling', gender: Gender.male);
+      final khuntha = Person(name: 'Khuntha', gender: Gender.khuntha);
+
+      father.addChild(sibling);
+      mother.addChild(sibling);
+      father.addChild(khuntha);
+      mother.addChild(khuntha);
+
+      final childRel = RelationshipCalculator.calculateRelationship(
+        father,
+        khuntha,
+      );
+      expect(childRel, isNotNull);
+      expect(childRel!.detailedDescription, equals('child'));
+
+      final siblingRel = RelationshipCalculator.calculateRelationship(
+        sibling,
+        khuntha,
+      );
+      expect(siblingRel, isNotNull);
+      expect(siblingRel!.detailedDescription, equals('sibling'));
+    });
   });
 }

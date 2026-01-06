@@ -35,6 +35,7 @@ class SiblingAnalyzer {
       target: relativeTo,
       maleType: types.$1,
       femaleType: types.$2,
+      khunthaType: Types.person,
       genderOverrides: genderOverrides,
     );
 
@@ -104,6 +105,7 @@ class SiblingAnalyzer {
       target: relativeTo,
       maleType: Types.maleDescendant,
       femaleType: Types.femaleDescendant,
+      khunthaType: Types.person,
       genderOverrides: genderOverrides,
     );
 

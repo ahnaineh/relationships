@@ -27,6 +27,7 @@ class CousinAnalyzer {
       target: relativeTo,
       genderOverrides: genderOverrides,
     );
+    final hasKnownLineage = parentGender != Gender.khuntha;
     final isPaternal = parentGender == Gender.male;
     final siblingType = SiblingHelper.getSiblingType(parent, auntUncle);
 
@@ -60,7 +61,13 @@ class CousinAnalyzer {
           Types.maternalMaternalHalfFemaleCousin,
     };
 
-    final type = typeMap[(isPaternal, siblingType, relativeGender)];
+    var type = hasKnownLineage
+        ? typeMap[(isPaternal, siblingType, relativeGender)]
+        : null;
+    if (type == null &&
+        (relativeGender == Gender.khuntha || !hasKnownLineage)) {
+      type = Types.person;
+    }
     if (type == null) return null;
 
     final genderPath = GenderResolver.resolveGenderPath(
@@ -83,6 +90,10 @@ class CousinAnalyzer {
     // Find common ancestor (grandparent)
     final commonAncestor = path.path.length > 2 ? path.path[2] : null;
 
+    final lineage = hasKnownLineage
+        ? (isPaternal ? Lineage.paternal : Lineage.maternal)
+        : Lineage.mixed;
+
     return Relationship(
       subject: subject,
       relativeTo: relativeTo,
@@ -94,7 +105,7 @@ class CousinAnalyzer {
       isDirect: false,
       isBloodRelation: true,
       detailedDescription: detailedDescription,
-      lineage: isPaternal ? Lineage.paternal : Lineage.maternal,
+      lineage: lineage,
       metadata: {
         'isCousin': true,
         'cousinDegree': 1, // First cousin

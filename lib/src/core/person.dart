@@ -84,6 +84,9 @@ class Person {
     if (spouse == this) {
       throw ArgumentError('A person cannot marry themselves');
     }
+    if (gender == Gender.khuntha || spouse.gender == Gender.khuntha) {
+      throw ArgumentError('Khuntha cannot be a spouse');
+    }
     if (_spouses.contains(spouse)) {
       return;
     }
@@ -101,6 +104,9 @@ class Person {
   void addChild(Person child) {
     if (child == this) {
       throw ArgumentError('A person cannot be their own child');
+    }
+    if (gender == Gender.khuntha) {
+      throw ArgumentError('Khuntha cannot be a parent');
     }
     if (_children.contains(child)) {
       return;
