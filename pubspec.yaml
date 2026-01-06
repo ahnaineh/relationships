@@ -1,6 +1,6 @@
 name: relationships
 description: Relationship modeling and kinship calculations with localized descriptions.
-version: 0.0.1
+version: 0.0.2
 repository: https://github.com/ahnaineh/relationships
 issue_tracker: https://github.com/ahnaineh/relationships/issues
 

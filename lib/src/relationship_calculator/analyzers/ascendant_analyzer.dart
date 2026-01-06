@@ -11,15 +11,24 @@ class AscendantAnalyzer {
   static Relationship? analyze(
     Person subject,
     Person relativeTo,
-    RelationshipPath path,
-  ) {
+    RelationshipPath path, {
+    Map<String, Gender>? genderOverrides,
+  }) {
     final type = GenderResolver.resolveGenderBasedType(
       target: relativeTo,
       maleType: Types.maleAscendant,
       femaleType: Types.femaleAscendant,
+      genderOverrides: genderOverrides,
     );
 
-    final genderPath = path.path.map((p) => p.gender).toList();
+    final relativeGender = GenderResolver.resolveGender(
+      target: relativeTo,
+      genderOverrides: genderOverrides,
+    );
+    final genderPath = GenderResolver.resolveGenderPath(
+      path: path.path,
+      genderOverrides: genderOverrides,
+    );
     final genealogyNotation = NotationGenerator.generateGenealogyNotation(
       path.steps,
       genderPath,
@@ -40,7 +49,7 @@ class AscendantAnalyzer {
     // Build the detailed description
     final detailedDescription = DetailedDescriptionBuilder.buildAscendantDescription(
       generationGap: generationGap,
-      gender: relativeTo.gender,
+      gender: relativeGender,
       lineage: lineage,
       pathDescription: pathDesc,
     );

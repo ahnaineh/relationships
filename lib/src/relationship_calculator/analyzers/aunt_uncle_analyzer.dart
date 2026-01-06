@@ -1,6 +1,7 @@
 import '../../core/person.dart';
 import '../core/core.dart';
 import '../helpers/detailed_description_builder.dart';
+import '../helpers/gender_resolver.dart';
 import '../helpers/notation_generator.dart';
 import '../helpers/sibling_helper.dart';
 import '../types.dart';
@@ -9,13 +10,22 @@ class AuntUncleAnalyzer {
   static Relationship? analyze(
     Person subject,
     Person relativeTo,
-    RelationshipPath path,
-  ) {
+    RelationshipPath path, {
+    Map<String, Gender>? genderOverrides,
+  }) {
     // Path is: subject -> parent -> grandparent -> aunt/uncle (relativeTo)
     if (path.path.length < 2) return null;
 
     final parent = path.path[1];
-    final isPaternal = parent.gender == Gender.male;
+    final parentGender = GenderResolver.resolveGender(
+      target: parent,
+      genderOverrides: genderOverrides,
+    );
+    final relativeGender = GenderResolver.resolveGender(
+      target: relativeTo,
+      genderOverrides: genderOverrides,
+    );
+    final isPaternal = parentGender == Gender.male;
     final siblingType = SiblingHelper.getSiblingType(parent, relativeTo);
 
     if (siblingType == SiblingType.none) return null;
@@ -48,10 +58,13 @@ class AuntUncleAnalyzer {
           Types.maternalMaternalHalfAunt,
     };
 
-    final type = typeMap[(isPaternal, siblingType, relativeTo.gender)];
+    final type = typeMap[(isPaternal, siblingType, relativeGender)];
     if (type == null) return null;
 
-    final genderPath = path.path.map((p) => p.gender).toList();
+    final genderPath = GenderResolver.resolveGenderPath(
+      path: path.path,
+      genderOverrides: genderOverrides,
+    );
     final genealogyNotation = NotationGenerator.generateGenealogyNotation(
       path.steps,
       genderPath,
@@ -59,7 +72,7 @@ class AuntUncleAnalyzer {
 
     // Build detailed description using DetailedDescriptionBuilder
     final detailedDescription = DetailedDescriptionBuilder.buildAuntUncleDescription(
-      gender: relativeTo.gender,
+      gender: relativeGender,
       isPaternal: isPaternal,
       siblingType: siblingType,
     );
@@ -79,7 +92,7 @@ class AuntUncleAnalyzer {
       metadata: {
         'isAuntUncle': true,
         'siblingType': siblingType.name,
-        'parentGender': parent.gender.name,
+        'parentGender': parentGender.name,
         'throughParent': parent.name,
       },
       genealogyNotation: genealogyNotation,
@@ -90,19 +103,31 @@ class AuntUncleAnalyzer {
   static Relationship? analyzeGreatAuntUncle(
     Person subject,
     Person relativeTo,
-    RelationshipPath path,
-  ) {
+    RelationshipPath path, {
+    Map<String, Gender>? genderOverrides,
+  }) {
     if (path.path.length < 3) return null;
 
     final parent = path.path[1];
-    final isPaternal = parent.gender == Gender.male;
-    final genderPath = path.path.map((p) => p.gender).toList();
+    final parentGender = GenderResolver.resolveGender(
+      target: parent,
+      genderOverrides: genderOverrides,
+    );
+    final relativeGender = GenderResolver.resolveGender(
+      target: relativeTo,
+      genderOverrides: genderOverrides,
+    );
+    final isPaternal = parentGender == Gender.male;
+    final genderPath = GenderResolver.resolveGenderPath(
+      path: path.path,
+      genderOverrides: genderOverrides,
+    );
     final genealogyNotation = NotationGenerator.generateGenealogyNotation(
       path.steps,
       genderPath,
     );
 
-    final isMale = relativeTo.gender == Gender.male;
+    final isMale = relativeGender == Gender.male;
     final baseRole = isMale ? 'great-uncle' : 'great-aunt';
     final lineage = isPaternal ? 'paternal' : 'maternal';
     final detailedDescription = '$lineage $baseRole';

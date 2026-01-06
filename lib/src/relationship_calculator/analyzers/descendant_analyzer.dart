@@ -10,15 +10,24 @@ class DescendantAnalyzer {
   static Relationship? analyze(
     Person subject,
     Person relativeTo,
-    RelationshipPath path,
-  ) {
+    RelationshipPath path, {
+    Map<String, Gender>? genderOverrides,
+  }) {
     final type = GenderResolver.resolveGenderBasedType(
       target: relativeTo,
       maleType: Types.maleDescendant,
       femaleType: Types.femaleDescendant,
+      genderOverrides: genderOverrides,
     );
 
-    final genderPath = path.path.map((p) => p.gender).toList();
+    final relativeGender = GenderResolver.resolveGender(
+      target: relativeTo,
+      genderOverrides: genderOverrides,
+    );
+    final genderPath = GenderResolver.resolveGenderPath(
+      path: path.path,
+      genderOverrides: genderOverrides,
+    );
     final genealogyNotation = NotationGenerator.generateGenealogyNotation(
       path.steps,
       genderPath,
@@ -28,7 +37,7 @@ class DescendantAnalyzer {
     // Build the detailed description with path information
     final basicDescription = DetailedDescriptionBuilder.buildDescendantDescription(
       generationGap: generationGap,
-      gender: relativeTo.gender,
+      gender: relativeGender,
     );
 
     // Add path description for generation 2+ descendants (e.g., "son's daughter")

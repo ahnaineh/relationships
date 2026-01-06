@@ -189,7 +189,11 @@ class FamilyTree {
     return findPath(person1, person2).isNotEmpty;
   }
 
-  Relationship? findRelationship(Person subject, Person relativeTo) {
+  Relationship? findRelationship(
+    Person subject,
+    Person relativeTo, {
+    Map<String, Gender>? genderOverrides,
+  }) {
     if (!_persons.containsKey(subject.id) ||
         !_persons.containsKey(relativeTo.id)) {
       throw ArgumentError('Both persons must be in the family tree');
@@ -200,6 +204,7 @@ class FamilyTree {
     final result = RelationshipCalculator.calculateRelationship(
       relativeTo,
       subject,
+      genderOverrides: genderOverrides,
     );
 
     if (result == null) return null;
@@ -439,6 +444,7 @@ class FamilyTree {
   List<Relationship> getRelationships(
     Person relativeTo, {
     bool Function(Person person)? where,
+    Map<String, Gender>? genderOverrides,
   }) {
     if (!_persons.containsKey(relativeTo.id)) {
       throw ArgumentError('Person must be in the family tree');
@@ -451,7 +457,11 @@ class FamilyTree {
         continue;
       }
 
-      final result = findRelationship(person, relativeTo);
+      final result = findRelationship(
+        person,
+        relativeTo,
+        genderOverrides: genderOverrides,
+      );
       if (result != null) {
         relationships.add(result);
       }

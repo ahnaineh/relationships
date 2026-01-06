@@ -1,6 +1,7 @@
 import '../../core/person.dart';
 import '../core/core.dart';
 import '../helpers/detailed_description_builder.dart';
+import '../helpers/gender_resolver.dart';
 import '../helpers/notation_generator.dart';
 import '../helpers/sibling_helper.dart';
 import '../types.dart';
@@ -9,8 +10,9 @@ class NieceNephewAnalyzer {
   static Relationship? analyze(
     Person subject,
     Person relativeTo,
-    RelationshipPath path,
-  ) {
+    RelationshipPath path, {
+    Map<String, Gender>? genderOverrides,
+  }) {
     // Path is: subject -> parent -> sibling -> niece/nephew (relativeTo)
     if (path.path.length < 3) return null;
 
@@ -18,6 +20,15 @@ class NieceNephewAnalyzer {
     final siblingType = SiblingHelper.getSiblingType(subject, sibling);
 
     if (siblingType == SiblingType.none) return null;
+
+    final siblingGender = GenderResolver.resolveGender(
+      target: sibling,
+      genderOverrides: genderOverrides,
+    );
+    final relativeGender = GenderResolver.resolveGender(
+      target: relativeTo,
+      genderOverrides: genderOverrides,
+    );
 
     // Map sibling types and genders to relationship types
     final typeMap =
@@ -48,10 +59,13 @@ class NieceNephewAnalyzer {
               Types.maternalSororalHalfNiece,
         };
 
-    final type = typeMap[(siblingType, sibling.gender, relativeTo.gender)];
+    final type = typeMap[(siblingType, siblingGender, relativeGender)];
     if (type == null) return null;
 
-    final genderPath = path.path.map((p) => p.gender).toList();
+    final genderPath = GenderResolver.resolveGenderPath(
+      path: path.path,
+      genderOverrides: genderOverrides,
+    );
     final genealogyNotation = NotationGenerator.generateGenealogyNotation(
       path.steps,
       genderPath,
@@ -59,9 +73,9 @@ class NieceNephewAnalyzer {
 
     // Build detailed description using DetailedDescriptionBuilder
     final detailedDescription = DetailedDescriptionBuilder.buildNieceNephewDescription(
-      gender: relativeTo.gender,
+      gender: relativeGender,
       siblingType: siblingType,
-      isBrothersSide: sibling.gender == Gender.male,
+      isBrothersSide: siblingGender == Gender.male,
     );
 
     // Determine lineage based on sibling type
@@ -90,9 +104,9 @@ class NieceNephewAnalyzer {
         'isNieceNephew': true,
         'siblingType': siblingType.name,
         'throughSibling': sibling.name,
-        'throughSiblingGender': sibling.gender.name,
-        'isFraternal': sibling.gender == Gender.male,
-        'isSororal': sibling.gender == Gender.female,
+        'throughSiblingGender': siblingGender.name,
+        'isFraternal': siblingGender == Gender.male,
+        'isSororal': siblingGender == Gender.female,
       },
       genealogyNotation: genealogyNotation,
       relationshipDegree: 3,
@@ -102,23 +116,35 @@ class NieceNephewAnalyzer {
   static Relationship? analyzeGrandNephewNiece(
     Person subject,
     Person relativeTo,
-    RelationshipPath path,
-  ) {
+    RelationshipPath path, {
+    Map<String, Gender>? genderOverrides,
+  }) {
     if (path.path.length < 3) return null;
 
     final sibling = path.path[2];
     final siblingType = SiblingHelper.getSiblingType(subject, sibling);
     if (siblingType == SiblingType.none) return null;
 
-    final genderPath = path.path.map((p) => p.gender).toList();
+    final siblingGender = GenderResolver.resolveGender(
+      target: sibling,
+      genderOverrides: genderOverrides,
+    );
+    final relativeGender = GenderResolver.resolveGender(
+      target: relativeTo,
+      genderOverrides: genderOverrides,
+    );
+    final genderPath = GenderResolver.resolveGenderPath(
+      path: path.path,
+      genderOverrides: genderOverrides,
+    );
     final genealogyNotation = NotationGenerator.generateGenealogyNotation(
       path.steps,
       genderPath,
     );
 
-    final isMale = relativeTo.gender == Gender.male;
+    final isMale = relativeGender == Gender.male;
     final baseRole = isMale ? 'grand-nephew' : 'grand-niece';
-    final throughBrother = sibling.gender == Gender.male;
+    final throughBrother = siblingGender == Gender.male;
     final throughType = throughBrother ? 'brother' : 'sister';
 
     String siblingDesc = '';

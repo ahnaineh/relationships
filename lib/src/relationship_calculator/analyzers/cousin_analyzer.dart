@@ -1,6 +1,7 @@
 import '../../core/person.dart';
 import '../core/core.dart';
 import '../helpers/detailed_description_builder.dart';
+import '../helpers/gender_resolver.dart';
 import '../helpers/lineage_analyzer.dart';
 import '../helpers/notation_generator.dart';
 import '../helpers/sibling_helper.dart';
@@ -10,14 +11,23 @@ class CousinAnalyzer {
   static Relationship? analyze(
     Person subject,
     Person relativeTo,
-    RelationshipPath path,
-  ) {
+    RelationshipPath path, {
+    Map<String, Gender>? genderOverrides,
+  }) {
     // Path is: subject -> parent -> grandparent -> aunt/uncle -> cousin (relativeTo)
     if (path.path.length < 4) return null;
 
     final parent = path.path[1];
     final auntUncle = path.path[3];
-    final isPaternal = parent.gender == Gender.male;
+    final parentGender = GenderResolver.resolveGender(
+      target: parent,
+      genderOverrides: genderOverrides,
+    );
+    final relativeGender = GenderResolver.resolveGender(
+      target: relativeTo,
+      genderOverrides: genderOverrides,
+    );
+    final isPaternal = parentGender == Gender.male;
     final siblingType = SiblingHelper.getSiblingType(parent, auntUncle);
 
     if (siblingType == SiblingType.none) return null;
@@ -50,10 +60,13 @@ class CousinAnalyzer {
           Types.maternalMaternalHalfFemaleCousin,
     };
 
-    final type = typeMap[(isPaternal, siblingType, relativeTo.gender)];
+    final type = typeMap[(isPaternal, siblingType, relativeGender)];
     if (type == null) return null;
 
-    final genderPath = path.path.map((p) => p.gender).toList();
+    final genderPath = GenderResolver.resolveGenderPath(
+      path: path.path,
+      genderOverrides: genderOverrides,
+    );
     final genealogyNotation = NotationGenerator.generateGenealogyNotation(
       path.steps,
       genderPath,
@@ -61,7 +74,7 @@ class CousinAnalyzer {
 
     // Build detailed description using DetailedDescriptionBuilder
     final detailedDescription = DetailedDescriptionBuilder.buildCousinDescription(
-      gender: relativeTo.gender,
+      gender: relativeGender,
       isPaternal: isPaternal,
       siblingType: siblingType,
     );
@@ -98,15 +111,23 @@ class CousinAnalyzer {
     Person subject,
     Person relativeTo,
     RelationshipPath path,
-    bool isOlderGeneration,
-  ) {
-    final genderPath = path.path.map((p) => p.gender).toList();
+    bool isOlderGeneration, {
+    Map<String, Gender>? genderOverrides,
+  }) {
+    final relativeGender = GenderResolver.resolveGender(
+      target: relativeTo,
+      genderOverrides: genderOverrides,
+    );
+    final genderPath = GenderResolver.resolveGenderPath(
+      path: path.path,
+      genderOverrides: genderOverrides,
+    );
     final genealogyNotation = NotationGenerator.generateGenealogyNotation(
       path.steps,
       genderPath,
     );
 
-    final isMale = relativeTo.gender == Gender.male;
+    final isMale = relativeGender == Gender.male;
     final gender = isMale ? 'male' : 'female';
     final generation = isOlderGeneration
         ? 'older generation'
@@ -138,15 +159,23 @@ class CousinAnalyzer {
   static Relationship? analyzeSecondCousin(
     Person subject,
     Person relativeTo,
-    RelationshipPath path,
-  ) {
-    final genderPath = path.path.map((p) => p.gender).toList();
+    RelationshipPath path, {
+    Map<String, Gender>? genderOverrides,
+  }) {
+    final relativeGender = GenderResolver.resolveGender(
+      target: relativeTo,
+      genderOverrides: genderOverrides,
+    );
+    final genderPath = GenderResolver.resolveGenderPath(
+      path: path.path,
+      genderOverrides: genderOverrides,
+    );
     final genealogyNotation = NotationGenerator.generateGenealogyNotation(
       path.steps,
       genderPath,
     );
 
-    final isMale = relativeTo.gender == Gender.male;
+    final isMale = relativeGender == Gender.male;
     final gender = isMale ? 'male' : 'female';
 
     // Find common ancestor (great-grandparent)

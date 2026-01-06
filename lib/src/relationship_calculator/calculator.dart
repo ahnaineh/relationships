@@ -8,8 +8,9 @@ import 'types.dart';
 class RelationshipCalculator {
   static RelationshipPath? findRelationshipPath(
     Person subject,
-    Person relativeTo,
-  ) {
+    Person relativeTo, {
+    Map<String, Gender>? genderOverrides,
+  }) {
     if (subject == relativeTo) return null;
 
     final visited = <Person>{};
@@ -34,7 +35,11 @@ class RelationshipCalculator {
       }
 
       for (final child in current.children) {
-        final step = switch (child.gender) {
+        final childGender = GenderResolver.resolveGender(
+          target: child,
+          genderOverrides: genderOverrides,
+        );
+        final step = switch (childGender) {
           Gender.male => RelationshipStep.son,
           Gender.female => RelationshipStep.daughter,
           Gender.khuntha => RelationshipStep.child,
@@ -43,7 +48,11 @@ class RelationshipCalculator {
       }
 
       for (final spouse in current.spouses) {
-        final step = switch (spouse.gender) {
+        final spouseGender = GenderResolver.resolveGender(
+          target: spouse,
+          genderOverrides: genderOverrides,
+        );
+        final step = switch (spouseGender) {
           Gender.male => RelationshipStep.husband,
           Gender.female => RelationshipStep.wife,
           Gender.khuntha => RelationshipStep.spouse,
@@ -73,8 +82,18 @@ class RelationshipCalculator {
 
   static Relationship? calculateRelationship(
     Person subject,
-    Person relativeTo,
-  ) {
+    Person relativeTo, {
+    Map<String, Gender>? genderOverrides,
+  }) {
+    final subjectGender = GenderResolver.resolveGender(
+      target: subject,
+      genderOverrides: genderOverrides,
+    );
+    final relativeGender = GenderResolver.resolveGender(
+      target: relativeTo,
+      genderOverrides: genderOverrides,
+    );
+
     // Self-relationship
     if (subject == relativeTo) {
       return Relationship(
@@ -83,7 +102,7 @@ class RelationshipCalculator {
         type: Types.person,
         path: RelationshipPath(path: [subject], steps: []),
         generationGap: 0,
-        genderPath: [subject.gender],
+        genderPath: [subjectGender],
         stepPath: [],
         isDirect: false,
         isBloodRelation: false,
@@ -96,9 +115,18 @@ class RelationshipCalculator {
     }
 
     // First check if there's a family relationship
-    final path = findRelationshipPath(subject, relativeTo);
+    final path = findRelationshipPath(
+      subject,
+      relativeTo,
+      genderOverrides: genderOverrides,
+    );
     if (path != null) {
-      return _analyzeRelationshipPath(subject, relativeTo, path);
+      return _analyzeRelationshipPath(
+        subject,
+        relativeTo,
+        path,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // If no family relationship, check if this is a manumitter
@@ -109,7 +137,7 @@ class RelationshipCalculator {
         type: Types.manumitter,
         path: RelationshipPath(path: [subject, relativeTo], steps: []),
         generationGap: 0,
-        genderPath: [subject.gender, relativeTo.gender],
+        genderPath: [subjectGender, relativeGender],
         stepPath: [],
         isDirect: false,
         isBloodRelation: false,
@@ -134,7 +162,7 @@ class RelationshipCalculator {
         type: Types.treasury,
         path: RelationshipPath(path: [subject, relativeTo], steps: []),
         generationGap: 0,
-        genderPath: [subject.gender, relativeTo.gender],
+        genderPath: [subjectGender, relativeGender],
         stepPath: [],
         isDirect: false,
         isBloodRelation: false,
@@ -152,8 +180,9 @@ class RelationshipCalculator {
   static Relationship? _analyzeRelationshipPath(
     Person subject,
     Person relativeTo,
-    RelationshipPath path,
-  ) {
+    RelationshipPath path, {
+    Map<String, Gender>? genderOverrides,
+  }) {
     final steps = path.steps;
 
     if (steps.isEmpty) {
@@ -163,7 +192,10 @@ class RelationshipCalculator {
         type: Types.person,
         path: path,
         generationGap: 0,
-        genderPath: path.path.map((p) => p.gender).toList(),
+        genderPath: GenderResolver.resolveGenderPath(
+          path: path.path,
+          genderOverrides: genderOverrides,
+        ),
         stepPath: steps,
         isDirect: false,
         isBloodRelation: true,
@@ -182,32 +214,61 @@ class RelationshipCalculator {
         relativeTo,
         path,
         steps[0],
+        genderOverrides: genderOverrides,
       );
     }
 
     // All parent steps - direct ascendant line
     if (steps.every(StepClassifier.isParentStep)) {
-      return AscendantAnalyzer.analyze(subject, relativeTo, path);
+      return AscendantAnalyzer.analyze(
+        subject,
+        relativeTo,
+        path,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // All child steps - direct descendant line
     if (steps.every(StepClassifier.isChildStep)) {
-      return DescendantAnalyzer.analyze(subject, relativeTo, path);
+      return DescendantAnalyzer.analyze(
+        subject,
+        relativeTo,
+        path,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // 2 steps
     if (steps.length == 2) {
-      return _analyzeTwoStepRelationship(subject, relativeTo, path, steps);
+      return _analyzeTwoStepRelationship(
+        subject,
+        relativeTo,
+        path,
+        steps,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // 3 steps
     if (steps.length == 3) {
-      return _analyzeThreeStepRelationship(subject, relativeTo, path, steps);
+      return _analyzeThreeStepRelationship(
+        subject,
+        relativeTo,
+        path,
+        steps,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // 4 steps
     if (steps.length == 4) {
-      return _analyzeFourStepRelationship(subject, relativeTo, path, steps);
+      return _analyzeFourStepRelationship(
+        subject,
+        relativeTo,
+        path,
+        steps,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // 5+ steps - Extended relationships
@@ -216,6 +277,7 @@ class RelationshipCalculator {
       relativeTo,
       path,
       steps,
+      genderOverrides: genderOverrides,
     );
   }
 
@@ -223,34 +285,58 @@ class RelationshipCalculator {
     Person subject,
     Person relativeTo,
     RelationshipPath path,
-    List<RelationshipStep> steps,
-  ) {
+    List<RelationshipStep> steps, {
+    Map<String, Gender>? genderOverrides,
+  }) {
     // Sibling
     if (StepClassifier.isParentStep(steps[0]) &&
         StepClassifier.isChildStep(steps[1])) {
-      return SiblingAnalyzer.analyze(subject, relativeTo, path);
+      return SiblingAnalyzer.analyze(
+        subject,
+        relativeTo,
+        path,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // Grandparent
     if (StepClassifier.isParentStep(steps[0]) &&
         StepClassifier.isParentStep(steps[1])) {
-      return AscendantAnalyzer.analyze(subject, relativeTo, path);
+      return AscendantAnalyzer.analyze(
+        subject,
+        relativeTo,
+        path,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // Grandchild
     if (StepClassifier.isChildStep(steps[0]) &&
         StepClassifier.isChildStep(steps[1])) {
-      return DescendantAnalyzer.analyze(subject, relativeTo, path);
+      return DescendantAnalyzer.analyze(
+        subject,
+        relativeTo,
+        path,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // Step-child
     if (StepClassifier.isSpouseStep(steps[0]) &&
         StepClassifier.isChildStep(steps[1])) {
-      return SiblingAnalyzer.analyzeStepChild(subject, relativeTo, path);
+      return SiblingAnalyzer.analyzeStepChild(
+        subject,
+        relativeTo,
+        path,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // No specific pattern matched for 2 steps - use path description
-    final genderPath = path.path.map((p) => p.gender).toList();
+    final genderPath = GenderResolver.resolveGenderPath(
+      path: path.path,
+      genderOverrides: genderOverrides,
+    );
     final pathDescription = PathDescriptionBuilder.buildExtendedPathDescription(steps);
 
     return Relationship(
@@ -280,34 +366,58 @@ class RelationshipCalculator {
     Person subject,
     Person relativeTo,
     RelationshipPath path,
-    List<RelationshipStep> steps,
-  ) {
+    List<RelationshipStep> steps, {
+    Map<String, Gender>? genderOverrides,
+  }) {
     // Aunt/Uncle (parent -> parent -> child)
     if (StepClassifier.isParentStep(steps[0]) &&
         StepClassifier.isParentStep(steps[1]) &&
         StepClassifier.isChildStep(steps[2])) {
-      return AuntUncleAnalyzer.analyze(subject, relativeTo, path);
+      return AuntUncleAnalyzer.analyze(
+        subject,
+        relativeTo,
+        path,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // Niece/Nephew (parent -> child -> child)
     if (StepClassifier.isParentStep(steps[0]) &&
         StepClassifier.isChildStep(steps[1]) &&
         StepClassifier.isChildStep(steps[2])) {
-      return NieceNephewAnalyzer.analyze(subject, relativeTo, path);
+      return NieceNephewAnalyzer.analyze(
+        subject,
+        relativeTo,
+        path,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // Great-grandparent (3 parent steps)
     if (steps.every(StepClassifier.isParentStep)) {
-      return AscendantAnalyzer.analyze(subject, relativeTo, path);
+      return AscendantAnalyzer.analyze(
+        subject,
+        relativeTo,
+        path,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // Great-grandchild (3 child steps)
     if (steps.every(StepClassifier.isChildStep)) {
-      return DescendantAnalyzer.analyze(subject, relativeTo, path);
+      return DescendantAnalyzer.analyze(
+        subject,
+        relativeTo,
+        path,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // No specific pattern matched for 3 steps - use path description
-    final genderPath = path.path.map((p) => p.gender).toList();
+    final genderPath = GenderResolver.resolveGenderPath(
+      path: path.path,
+      genderOverrides: genderOverrides,
+    );
     final pathDescription = PathDescriptionBuilder.buildExtendedPathDescription(steps);
 
     return Relationship(
@@ -337,28 +447,47 @@ class RelationshipCalculator {
     Person subject,
     Person relativeTo,
     RelationshipPath path,
-    List<RelationshipStep> steps,
-  ) {
+    List<RelationshipStep> steps, {
+    Map<String, Gender>? genderOverrides,
+  }) {
     // First cousin (parent -> parent -> child -> child)
     if (StepClassifier.isParentStep(steps[0]) &&
         StepClassifier.isParentStep(steps[1]) &&
         StepClassifier.isChildStep(steps[2]) &&
         StepClassifier.isChildStep(steps[3])) {
-      return CousinAnalyzer.analyze(subject, relativeTo, path);
+      return CousinAnalyzer.analyze(
+        subject,
+        relativeTo,
+        path,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // Great-great-grandparent (4 parent steps)
     if (steps.every(StepClassifier.isParentStep)) {
-      return AscendantAnalyzer.analyze(subject, relativeTo, path);
+      return AscendantAnalyzer.analyze(
+        subject,
+        relativeTo,
+        path,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // Great-great-grandchild (4 child steps)
     if (steps.every(StepClassifier.isChildStep)) {
-      return DescendantAnalyzer.analyze(subject, relativeTo, path);
+      return DescendantAnalyzer.analyze(
+        subject,
+        relativeTo,
+        path,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // No specific pattern matched for 4 steps - use path description
-    final genderPath = path.path.map((p) => p.gender).toList();
+    final genderPath = GenderResolver.resolveGenderPath(
+      path: path.path,
+      genderOverrides: genderOverrides,
+    );
     final pathDescription = PathDescriptionBuilder.buildExtendedPathDescription(steps);
 
     return Relationship(

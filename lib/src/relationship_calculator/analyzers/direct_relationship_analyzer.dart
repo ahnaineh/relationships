@@ -10,9 +10,17 @@ class DirectRelationshipAnalyzer {
     Person subject,
     Person relativeTo,
     RelationshipPath path,
-    RelationshipStep step,
-  ) {
-    final genderPath = path.path.map((p) => p.gender).toList();
+    RelationshipStep step, {
+    Map<String, Gender>? genderOverrides,
+  }) {
+    final relativeGender = GenderResolver.resolveGender(
+      target: relativeTo,
+      genderOverrides: genderOverrides,
+    );
+    final genderPath = GenderResolver.resolveGenderPath(
+      path: path.path,
+      genderOverrides: genderOverrides,
+    );
     final genealogyNotation = NotationGenerator.generateGenealogyNotation(
       path.steps,
       genderPath,
@@ -66,6 +74,7 @@ class DirectRelationshipAnalyzer {
           target: relativeTo,
           maleType: Types.maleAscendant,
           femaleType: Types.femaleAscendant,
+          genderOverrides: genderOverrides,
         );
         return Relationship(
           subject: subject,
@@ -78,12 +87,12 @@ class DirectRelationshipAnalyzer {
           isDirect: true,
           isBloodRelation: true,
           detailedDescription: DetailedDescriptionBuilder.buildDirectRelationship(
-            gender: relativeTo.gender,
+            gender: relativeGender,
             relationType: 'parent',
           ),
-          lineage: relativeTo.gender == Gender.male
+          lineage: relativeGender == Gender.male
               ? Lineage.paternal
-              : relativeTo.gender == Gender.female
+              : relativeGender == Gender.female
               ? Lineage.maternal
               : Lineage.mixed,
           metadata: {'isParent': true},
@@ -138,6 +147,7 @@ class DirectRelationshipAnalyzer {
           target: relativeTo,
           maleType: Types.maleDescendant,
           femaleType: Types.femaleDescendant,
+          genderOverrides: genderOverrides,
         );
         return Relationship(
           subject: subject,
@@ -150,7 +160,7 @@ class DirectRelationshipAnalyzer {
           isDirect: true,
           isBloodRelation: true,
           detailedDescription: DetailedDescriptionBuilder.buildDirectRelationship(
-            gender: relativeTo.gender,
+            gender: relativeGender,
             relationType: 'child',
           ),
           lineage: Lineage.mixed,
@@ -206,6 +216,7 @@ class DirectRelationshipAnalyzer {
           target: relativeTo,
           maleType: Types.husband,
           femaleType: Types.wife,
+          genderOverrides: genderOverrides,
         );
         return Relationship(
           subject: subject,
@@ -218,7 +229,7 @@ class DirectRelationshipAnalyzer {
           isDirect: false,
           isBloodRelation: false,
           detailedDescription: DetailedDescriptionBuilder.buildDirectRelationship(
-            gender: relativeTo.gender,
+            gender: relativeGender,
             relationType: 'spouse',
           ),
           lineage: Lineage.none,

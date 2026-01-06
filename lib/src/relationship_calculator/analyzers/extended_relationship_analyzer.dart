@@ -1,6 +1,7 @@
 import '../../core/person.dart';
 import '../core/core.dart';
 import '../helpers/detailed_description_builder.dart';
+import '../helpers/gender_resolver.dart';
 import '../helpers/generation_gap_calculator.dart';
 import '../helpers/lineage_analyzer.dart';
 import '../helpers/notation_generator.dart';
@@ -18,16 +19,27 @@ class ExtendedRelationshipAnalyzer {
     Person subject,
     Person relativeTo,
     RelationshipPath path,
-    List<RelationshipStep> steps,
-  ) {
+    List<RelationshipStep> steps, {
+    Map<String, Gender>? genderOverrides,
+  }) {
     // All ascendants (any number of parent steps)
     if (steps.every(StepClassifier.isParentStep)) {
-      return AscendantAnalyzer.analyze(subject, relativeTo, path);
+      return AscendantAnalyzer.analyze(
+        subject,
+        relativeTo,
+        path,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // All descendants (any number of child steps)
     if (steps.every(StepClassifier.isChildStep)) {
-      return DescendantAnalyzer.analyze(subject, relativeTo, path);
+      return DescendantAnalyzer.analyze(
+        subject,
+        relativeTo,
+        path,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // Great-aunt/uncle (parent -> parent -> parent -> child)
@@ -36,7 +48,12 @@ class ExtendedRelationshipAnalyzer {
         StepClassifier.isParentStep(steps[1]) &&
         StepClassifier.isParentStep(steps[2]) &&
         StepClassifier.isChildStep(steps[3])) {
-      return AuntUncleAnalyzer.analyzeGreatAuntUncle(subject, relativeTo, path);
+      return AuntUncleAnalyzer.analyzeGreatAuntUncle(
+        subject,
+        relativeTo,
+        path,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // Grand-nephew/niece (parent -> child -> child -> child)
@@ -49,6 +66,7 @@ class ExtendedRelationshipAnalyzer {
         subject,
         relativeTo,
         path,
+        genderOverrides: genderOverrides,
       );
     }
 
@@ -64,6 +82,7 @@ class ExtendedRelationshipAnalyzer {
         relativeTo,
         path,
         true,
+        genderOverrides: genderOverrides,
       );
     }
 
@@ -79,6 +98,7 @@ class ExtendedRelationshipAnalyzer {
         relativeTo,
         path,
         false,
+        genderOverrides: genderOverrides,
       );
     }
 
@@ -90,12 +110,20 @@ class ExtendedRelationshipAnalyzer {
         StepClassifier.isChildStep(steps[3]) &&
         StepClassifier.isChildStep(steps[4]) &&
         StepClassifier.isChildStep(steps[5])) {
-      return CousinAnalyzer.analyzeSecondCousin(subject, relativeTo, path);
+      return CousinAnalyzer.analyzeSecondCousin(
+        subject,
+        relativeTo,
+        path,
+        genderOverrides: genderOverrides,
+      );
     }
 
     // For any other complex relationships that don't match specific patterns,
     // build a detailed path description
-    final genderPath = path.path.map((p) => p.gender).toList();
+    final genderPath = GenderResolver.resolveGenderPath(
+      path: path.path,
+      genderOverrides: genderOverrides,
+    );
 
     // Generate a detailed path-based description for the relationship
     final pathDescription = PathDescriptionBuilder.buildExtendedPathDescription(steps);

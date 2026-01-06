@@ -10,8 +10,9 @@ class SiblingAnalyzer {
   static Relationship? analyze(
     Person subject,
     Person relativeTo,
-    RelationshipPath path,
-  ) {
+    RelationshipPath path, {
+    Map<String, Gender>? genderOverrides,
+  }) {
     final siblingType = SiblingHelper.getSiblingType(subject, relativeTo);
     if (siblingType == SiblingType.none) return null;
 
@@ -34,9 +35,17 @@ class SiblingAnalyzer {
       target: relativeTo,
       maleType: types.$1,
       femaleType: types.$2,
+      genderOverrides: genderOverrides,
     );
 
-    final genderPath = path.path.map((p) => p.gender).toList();
+    final relativeGender = GenderResolver.resolveGender(
+      target: relativeTo,
+      genderOverrides: genderOverrides,
+    );
+    final genderPath = GenderResolver.resolveGenderPath(
+      path: path.path,
+      genderOverrides: genderOverrides,
+    );
     final genealogyNotation = NotationGenerator.generateGenealogyNotation(
       path.steps,
       genderPath,
@@ -44,7 +53,7 @@ class SiblingAnalyzer {
 
     // Build the detailed description
     final detailedDescription = DetailedDescriptionBuilder.buildSiblingDescription(
-      gender: relativeTo.gender,
+      gender: relativeGender,
       siblingType: siblingType,
     );
 
@@ -87,15 +96,24 @@ class SiblingAnalyzer {
   static Relationship? analyzeStepChild(
     Person subject,
     Person relativeTo,
-    RelationshipPath path,
-  ) {
+    RelationshipPath path, {
+    Map<String, Gender>? genderOverrides,
+  }) {
     final type = GenderResolver.resolveGenderBasedType(
       target: relativeTo,
       maleType: Types.maleDescendant,
       femaleType: Types.femaleDescendant,
+      genderOverrides: genderOverrides,
     );
 
-    final genderPath = path.path.map((p) => p.gender).toList();
+    final relativeGender = GenderResolver.resolveGender(
+      target: relativeTo,
+      genderOverrides: genderOverrides,
+    );
+    final genderPath = GenderResolver.resolveGenderPath(
+      path: path.path,
+      genderOverrides: genderOverrides,
+    );
     final genealogyNotation = NotationGenerator.generateGenealogyNotation(
       path.steps,
       genderPath,
@@ -111,7 +129,9 @@ class SiblingAnalyzer {
       stepPath: path.steps,
       isDirect: false,
       isBloodRelation: false,
-      detailedDescription: DetailedDescriptionBuilder.buildStepChildDescription(relativeTo.gender),
+      detailedDescription: DetailedDescriptionBuilder.buildStepChildDescription(
+        relativeGender,
+      ),
       lineage: Lineage.none,
       metadata: {'isStepChild': true, 'throughSpouse': path.path[1].name},
       genealogyNotation: genealogyNotation,

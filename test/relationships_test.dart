@@ -4,8 +4,8 @@ import 'package:test/test.dart';
 
 void main() {
   group('Relationship descriptions', () {
-    setUp(() {
-      LocaleSettings.setLocale(AppLocale.en);
+    setUp(() async {
+      await LocaleSettings.setLocale(AppLocale.en);
     });
 
     test('Descendant relationships include path descriptions', () {
@@ -54,11 +54,11 @@ void main() {
       expect(rel!.detailedDescription, isNot(equals(t.relationships.special.extendedFamily)));
     });
 
-    test('Translations are available for multiple locales', () {
-      LocaleSettings.setLocale(AppLocale.ar);
+    test('Translations are available for multiple locales', () async {
+      await LocaleSettings.setLocale(AppLocale.ar);
       expect(t.relationships.base.father.isNotEmpty, isTrue);
 
-      LocaleSettings.setLocale(AppLocale.en);
+      await LocaleSettings.setLocale(AppLocale.en);
       expect(t.relationships.base.father, equals('father'));
     });
   });
