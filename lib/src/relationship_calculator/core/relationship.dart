@@ -15,16 +15,20 @@ sealed class Relationship with _$Relationship {
     required Person relativeTo,
     required Types type,
     required RelationshipPath path,
-    required int generationGap, // 0 for siblings/spouses, positive for descendants, negative for ancestors
+    required int
+    generationGap, // 0 for siblings/spouses, positive for descendants, negative for ancestors
     required List<Gender> genderPath, // Gender of each person in the path
     required List<RelationshipStep> stepPath, // The relationship steps taken
     required bool isDirect, // true for direct line (parent-child only)
     required bool isBloodRelation, // false for spouses/in-laws/manumitter
-    required String detailedDescription, // e.g., "paternal grandfather (father's father)"
+    required String
+    detailedDescription, // e.g., "paternal grandfather (father's father)"
     required Lineage lineage, // paternal, maternal, or mixed
     required Map<String, dynamic> metadata, // Additional context
-    required String genealogyNotation, // Standard notation like "FF" for father's father
-    required int relationshipDegree, // Degree of relationship for legal/inheritance
+    required String
+    genealogyNotation, // Standard notation like "FF" for father's father
+    required int
+    relationshipDegree, // Degree of relationship for legal/inheritance
   }) = _Relationship;
 
   const Relationship._();

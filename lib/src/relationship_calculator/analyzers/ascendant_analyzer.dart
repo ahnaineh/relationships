@@ -47,12 +47,13 @@ class AscendantAnalyzer {
     }
 
     // Build the detailed description
-    final detailedDescription = DetailedDescriptionBuilder.buildAscendantDescription(
-      generationGap: generationGap,
-      gender: relativeGender,
-      lineage: lineage,
-      pathDescription: pathDesc,
-    );
+    final detailedDescription =
+        DetailedDescriptionBuilder.buildAscendantDescription(
+          generationGap: generationGap,
+          gender: relativeGender,
+          lineage: lineage,
+          pathDescription: pathDesc,
+        );
 
     return Relationship(
       subject: subject,

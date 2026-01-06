@@ -52,10 +52,11 @@ class SiblingAnalyzer {
     );
 
     // Build the detailed description
-    final detailedDescription = DetailedDescriptionBuilder.buildSiblingDescription(
-      gender: relativeGender,
-      siblingType: siblingType,
-    );
+    final detailedDescription =
+        DetailedDescriptionBuilder.buildSiblingDescription(
+          gender: relativeGender,
+          siblingType: siblingType,
+        );
 
     // Determine lineage for half-siblings
     Lineage lineage;

@@ -35,10 +35,11 @@ class DescendantAnalyzer {
     final generationGap = path.steps.length;
 
     // Build the detailed description with path information
-    final basicDescription = DetailedDescriptionBuilder.buildDescendantDescription(
-      generationGap: generationGap,
-      gender: relativeGender,
-    );
+    final basicDescription =
+        DetailedDescriptionBuilder.buildDescendantDescription(
+          generationGap: generationGap,
+          gender: relativeGender,
+        );
 
     // Add path description for generation 2+ descendants (e.g., "son's daughter")
     final pathDescription = generationGap >= 2

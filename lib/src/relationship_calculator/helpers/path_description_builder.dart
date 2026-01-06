@@ -112,7 +112,8 @@ class PathDescriptionBuilder {
       // The earlier steps show the path to get there
       for (int i = steps.length - 1; i >= 0; i--) {
         final step = steps[i];
-        final isLast = (i == 0); // The first in path (last when reversed) gets "ال"
+        final isLast =
+            (i == 0); // The first in path (last when reversed) gets "ال"
 
         switch (step) {
           case RelationshipStep.father:

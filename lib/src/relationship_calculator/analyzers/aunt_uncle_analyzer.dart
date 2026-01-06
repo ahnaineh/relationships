@@ -71,11 +71,12 @@ class AuntUncleAnalyzer {
     );
 
     // Build detailed description using DetailedDescriptionBuilder
-    final detailedDescription = DetailedDescriptionBuilder.buildAuntUncleDescription(
-      gender: relativeGender,
-      isPaternal: isPaternal,
-      siblingType: siblingType,
-    );
+    final detailedDescription =
+        DetailedDescriptionBuilder.buildAuntUncleDescription(
+          gender: relativeGender,
+          isPaternal: isPaternal,
+          siblingType: siblingType,
+        );
 
     return Relationship(
       subject: subject,

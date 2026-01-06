@@ -15,10 +15,8 @@ class GenderResolver {
   }) {
     return path
         .map(
-          (person) => resolveGender(
-            target: person,
-            genderOverrides: genderOverrides,
-          ),
+          (person) =>
+              resolveGender(target: person, genderOverrides: genderOverrides),
         )
         .toList();
   }

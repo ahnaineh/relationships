@@ -9,7 +9,10 @@ void main() {
 
   father.addChild(daughter);
 
-  final relationship = RelationshipCalculator.calculateRelationship(father, daughter);
+  final relationship = RelationshipCalculator.calculateRelationship(
+    father,
+    daughter,
+  );
   if (relationship == null) {
     print('No relationship found.');
     return;

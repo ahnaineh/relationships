@@ -38,10 +38,11 @@ class DirectRelationshipAnalyzer {
           stepPath: path.steps,
           isDirect: true,
           isBloodRelation: true,
-          detailedDescription: DetailedDescriptionBuilder.buildDirectRelationship(
-            gender: Gender.male,
-            relationType: 'father',
-          ),
+          detailedDescription:
+              DetailedDescriptionBuilder.buildDirectRelationship(
+                gender: Gender.male,
+                relationType: 'father',
+              ),
           lineage: Lineage.paternal,
           metadata: {'isParent': true, 'isFather': true},
           genealogyNotation: genealogyNotation,
@@ -59,10 +60,11 @@ class DirectRelationshipAnalyzer {
           stepPath: path.steps,
           isDirect: true,
           isBloodRelation: true,
-          detailedDescription: DetailedDescriptionBuilder.buildDirectRelationship(
-            gender: Gender.female,
-            relationType: 'mother',
-          ),
+          detailedDescription:
+              DetailedDescriptionBuilder.buildDirectRelationship(
+                gender: Gender.female,
+                relationType: 'mother',
+              ),
           lineage: Lineage.maternal,
           metadata: {'isParent': true, 'isMother': true},
           genealogyNotation: genealogyNotation,
@@ -86,10 +88,11 @@ class DirectRelationshipAnalyzer {
           stepPath: path.steps,
           isDirect: true,
           isBloodRelation: true,
-          detailedDescription: DetailedDescriptionBuilder.buildDirectRelationship(
-            gender: relativeGender,
-            relationType: 'parent',
-          ),
+          detailedDescription:
+              DetailedDescriptionBuilder.buildDirectRelationship(
+                gender: relativeGender,
+                relationType: 'parent',
+              ),
           lineage: relativeGender == Gender.male
               ? Lineage.paternal
               : relativeGender == Gender.female
@@ -111,10 +114,11 @@ class DirectRelationshipAnalyzer {
           stepPath: path.steps,
           isDirect: true,
           isBloodRelation: true,
-          detailedDescription: DetailedDescriptionBuilder.buildDirectRelationship(
-            gender: Gender.male,
-            relationType: 'son',
-          ),
+          detailedDescription:
+              DetailedDescriptionBuilder.buildDirectRelationship(
+                gender: Gender.male,
+                relationType: 'son',
+              ),
           lineage: Lineage.mixed,
           metadata: {'isChild': true, 'isSon': true},
           genealogyNotation: genealogyNotation,
@@ -132,10 +136,11 @@ class DirectRelationshipAnalyzer {
           stepPath: path.steps,
           isDirect: true,
           isBloodRelation: true,
-          detailedDescription: DetailedDescriptionBuilder.buildDirectRelationship(
-            gender: Gender.female,
-            relationType: 'daughter',
-          ),
+          detailedDescription:
+              DetailedDescriptionBuilder.buildDirectRelationship(
+                gender: Gender.female,
+                relationType: 'daughter',
+              ),
           lineage: Lineage.mixed,
           metadata: {'isChild': true, 'isDaughter': true},
           genealogyNotation: genealogyNotation,
@@ -159,10 +164,11 @@ class DirectRelationshipAnalyzer {
           stepPath: path.steps,
           isDirect: true,
           isBloodRelation: true,
-          detailedDescription: DetailedDescriptionBuilder.buildDirectRelationship(
-            gender: relativeGender,
-            relationType: 'child',
-          ),
+          detailedDescription:
+              DetailedDescriptionBuilder.buildDirectRelationship(
+                gender: relativeGender,
+                relationType: 'child',
+              ),
           lineage: Lineage.mixed,
           metadata: {'isChild': true},
           genealogyNotation: genealogyNotation,
@@ -180,10 +186,11 @@ class DirectRelationshipAnalyzer {
           stepPath: path.steps,
           isDirect: false,
           isBloodRelation: false,
-          detailedDescription: DetailedDescriptionBuilder.buildDirectRelationship(
-            gender: Gender.male,
-            relationType: 'husband',
-          ),
+          detailedDescription:
+              DetailedDescriptionBuilder.buildDirectRelationship(
+                gender: Gender.male,
+                relationType: 'husband',
+              ),
           lineage: Lineage.none,
           metadata: {'isSpouse': true, 'isHusband': true},
           genealogyNotation: genealogyNotation,
@@ -201,10 +208,11 @@ class DirectRelationshipAnalyzer {
           stepPath: path.steps,
           isDirect: false,
           isBloodRelation: false,
-          detailedDescription: DetailedDescriptionBuilder.buildDirectRelationship(
-            gender: Gender.female,
-            relationType: 'wife',
-          ),
+          detailedDescription:
+              DetailedDescriptionBuilder.buildDirectRelationship(
+                gender: Gender.female,
+                relationType: 'wife',
+              ),
           lineage: Lineage.none,
           metadata: {'isSpouse': true, 'isWife': true},
           genealogyNotation: genealogyNotation,
@@ -228,10 +236,11 @@ class DirectRelationshipAnalyzer {
           stepPath: path.steps,
           isDirect: false,
           isBloodRelation: false,
-          detailedDescription: DetailedDescriptionBuilder.buildDirectRelationship(
-            gender: relativeGender,
-            relationType: 'spouse',
-          ),
+          detailedDescription:
+              DetailedDescriptionBuilder.buildDirectRelationship(
+                gender: relativeGender,
+                relationType: 'spouse',
+              ),
           lineage: Lineage.none,
           metadata: {'isSpouse': true},
           genealogyNotation: genealogyNotation,

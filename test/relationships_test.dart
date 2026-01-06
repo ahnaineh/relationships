@@ -13,7 +13,10 @@ void main() {
       final father = Person(name: 'Father', gender: Gender.male);
       final son = Person(name: 'Son', gender: Gender.male);
       final daughter = Person(name: 'Daughter', gender: Gender.female);
-      final granddaughter = Person(name: 'Granddaughter', gender: Gender.female);
+      final granddaughter = Person(
+        name: 'Granddaughter',
+        gender: Gender.female,
+      );
 
       grandfather.addChild(father);
       father.addChild(son);
@@ -36,7 +39,10 @@ void main() {
     });
 
     test('Extended relationships avoid generic labels when possible', () {
-      final greatGrandfather = Person(name: 'Great-Grandfather', gender: Gender.male);
+      final greatGrandfather = Person(
+        name: 'Great-Grandfather',
+        gender: Gender.male,
+      );
       final grandfather = Person(name: 'Grandfather', gender: Gender.male);
       final father = Person(name: 'Father', gender: Gender.male);
       final uncle = Person(name: 'Uncle', gender: Gender.male);
@@ -49,9 +55,15 @@ void main() {
       father.addChild(brother);
       uncle.addChild(cousinSon);
 
-      final rel = RelationshipCalculator.calculateRelationship(brother, cousinSon);
+      final rel = RelationshipCalculator.calculateRelationship(
+        brother,
+        cousinSon,
+      );
       expect(rel, isNotNull);
-      expect(rel!.detailedDescription, isNot(equals(t.relationships.special.extendedFamily)));
+      expect(
+        rel!.detailedDescription,
+        isNot(equals(t.relationships.special.extendedFamily)),
+      );
     });
 
     test('Translations are available for multiple locales', () async {

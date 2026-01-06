@@ -72,11 +72,12 @@ class NieceNephewAnalyzer {
     );
 
     // Build detailed description using DetailedDescriptionBuilder
-    final detailedDescription = DetailedDescriptionBuilder.buildNieceNephewDescription(
-      gender: relativeGender,
-      siblingType: siblingType,
-      isBrothersSide: siblingGender == Gender.male,
-    );
+    final detailedDescription =
+        DetailedDescriptionBuilder.buildNieceNephewDescription(
+          gender: relativeGender,
+          siblingType: siblingType,
+          isBrothersSide: siblingGender == Gender.male,
+        );
 
     // Determine lineage based on sibling type
     Lineage lineage;

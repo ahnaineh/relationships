@@ -1,5 +1,5 @@
 /// Relationship modeling and kinship calculations.
-library relationships;
+library;
 
 export 'src/core/person.dart';
 export 'src/core/family_tree.dart';

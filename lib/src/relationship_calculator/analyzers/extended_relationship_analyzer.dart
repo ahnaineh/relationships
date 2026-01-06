@@ -126,12 +126,16 @@ class ExtendedRelationshipAnalyzer {
     );
 
     // Generate a detailed path-based description for the relationship
-    final pathDescription = PathDescriptionBuilder.buildExtendedPathDescription(steps);
+    final pathDescription = PathDescriptionBuilder.buildExtendedPathDescription(
+      steps,
+    );
 
     // Use the path description if available, otherwise fall back to generic
     final detailedDescription = pathDescription.isNotEmpty
         ? pathDescription
-        : DetailedDescriptionBuilder.buildSpecialRelationship('distantRelative');
+        : DetailedDescriptionBuilder.buildSpecialRelationship(
+            'distantRelative',
+          );
 
     return Relationship(
       subject: subject,

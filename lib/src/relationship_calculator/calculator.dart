@@ -106,7 +106,8 @@ class RelationshipCalculator {
         stepPath: [],
         isDirect: false,
         isBloodRelation: false,
-        detailedDescription: DetailedDescriptionBuilder.buildSpecialRelationship('self'),
+        detailedDescription:
+            DetailedDescriptionBuilder.buildSpecialRelationship('self'),
         lineage: Lineage.none,
         metadata: {'isSelf': true},
         genealogyNotation: 'SELF',
@@ -141,7 +142,8 @@ class RelationshipCalculator {
         stepPath: [],
         isDirect: false,
         isBloodRelation: false,
-        detailedDescription: DetailedDescriptionBuilder.buildSpecialRelationship('manumitter'),
+        detailedDescription:
+            DetailedDescriptionBuilder.buildSpecialRelationship('manumitter'),
         lineage: Lineage.none,
         metadata: {'isManumitter': true},
         genealogyNotation: 'MANUMITTER',
@@ -166,7 +168,8 @@ class RelationshipCalculator {
         stepPath: [],
         isDirect: false,
         isBloodRelation: false,
-        detailedDescription: DetailedDescriptionBuilder.buildSpecialRelationship('treasury'),
+        detailedDescription:
+            DetailedDescriptionBuilder.buildSpecialRelationship('treasury'),
         lineage: Lineage.none,
         metadata: {'isTreasury': true},
         genealogyNotation: 'TREASURY',
@@ -199,7 +202,10 @@ class RelationshipCalculator {
         stepPath: steps,
         isDirect: false,
         isBloodRelation: true,
-        detailedDescription: DetailedDescriptionBuilder.buildSpecialRelationship('relatedPerson'),
+        detailedDescription:
+            DetailedDescriptionBuilder.buildSpecialRelationship(
+              'relatedPerson',
+            ),
         lineage: Lineage.none,
         metadata: {},
         genealogyNotation: '',
@@ -337,7 +343,9 @@ class RelationshipCalculator {
       path: path.path,
       genderOverrides: genderOverrides,
     );
-    final pathDescription = PathDescriptionBuilder.buildExtendedPathDescription(steps);
+    final pathDescription = PathDescriptionBuilder.buildExtendedPathDescription(
+      steps,
+    );
 
     return Relationship(
       subject: subject,
@@ -351,7 +359,9 @@ class RelationshipCalculator {
       isBloodRelation: !steps.any(StepClassifier.isSpouseStep),
       detailedDescription: pathDescription.isNotEmpty
           ? pathDescription
-          : DetailedDescriptionBuilder.buildSpecialRelationship('extendedFamily'),
+          : DetailedDescriptionBuilder.buildSpecialRelationship(
+              'extendedFamily',
+            ),
       lineage: LineageAnalyzer.analyzeLineage(subject, relativeTo, path),
       metadata: {},
       genealogyNotation: NotationGenerator.generateGenealogyNotation(
@@ -418,7 +428,9 @@ class RelationshipCalculator {
       path: path.path,
       genderOverrides: genderOverrides,
     );
-    final pathDescription = PathDescriptionBuilder.buildExtendedPathDescription(steps);
+    final pathDescription = PathDescriptionBuilder.buildExtendedPathDescription(
+      steps,
+    );
 
     return Relationship(
       subject: subject,
@@ -432,7 +444,9 @@ class RelationshipCalculator {
       isBloodRelation: !steps.any(StepClassifier.isSpouseStep),
       detailedDescription: pathDescription.isNotEmpty
           ? pathDescription
-          : DetailedDescriptionBuilder.buildSpecialRelationship('extendedFamily'),
+          : DetailedDescriptionBuilder.buildSpecialRelationship(
+              'extendedFamily',
+            ),
       lineage: LineageAnalyzer.analyzeLineage(subject, relativeTo, path),
       metadata: {},
       genealogyNotation: NotationGenerator.generateGenealogyNotation(
@@ -488,7 +502,9 @@ class RelationshipCalculator {
       path: path.path,
       genderOverrides: genderOverrides,
     );
-    final pathDescription = PathDescriptionBuilder.buildExtendedPathDescription(steps);
+    final pathDescription = PathDescriptionBuilder.buildExtendedPathDescription(
+      steps,
+    );
 
     return Relationship(
       subject: subject,
@@ -502,7 +518,9 @@ class RelationshipCalculator {
       isBloodRelation: !steps.any(StepClassifier.isSpouseStep),
       detailedDescription: pathDescription.isNotEmpty
           ? pathDescription
-          : DetailedDescriptionBuilder.buildSpecialRelationship('extendedFamily'),
+          : DetailedDescriptionBuilder.buildSpecialRelationship(
+              'extendedFamily',
+            ),
       lineage: LineageAnalyzer.analyzeLineage(subject, relativeTo, path),
       metadata: {},
       genealogyNotation: NotationGenerator.generateGenealogyNotation(

@@ -73,11 +73,12 @@ class CousinAnalyzer {
     );
 
     // Build detailed description using DetailedDescriptionBuilder
-    final detailedDescription = DetailedDescriptionBuilder.buildCousinDescription(
-      gender: relativeGender,
-      isPaternal: isPaternal,
-      siblingType: siblingType,
-    );
+    final detailedDescription =
+        DetailedDescriptionBuilder.buildCousinDescription(
+          gender: relativeGender,
+          isPaternal: isPaternal,
+          siblingType: siblingType,
+        );
 
     // Find common ancestor (grandparent)
     final commonAncestor = path.path.length > 2 ? path.path[2] : null;

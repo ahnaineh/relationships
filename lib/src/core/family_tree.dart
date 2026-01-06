@@ -32,7 +32,8 @@ class FamilyTree {
     return person;
   }
 
-  Person? updatePerson(String personId, {
+  Person? updatePerson(
+    String personId, {
     String? name,
     DateTime? birthDate,
     DateTime? deathDate,
